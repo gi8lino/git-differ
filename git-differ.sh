@@ -5,26 +5,26 @@ VERSION="v1.0.3"
 help() {
     printf "%s\n"  \
            "Usage: git-differ.sh [-s|--skip]" \
-           "                     [-a|--all]" \
+           "                     [-r|--recursive]" \
            "                     [-m|--maxdepth LEVELS]" \
            "                     [-e|--exclude \"DIRECTORY [DIRECTORY] ...\"]"\
            "                     PATH [PATH ...] " \
            "" \
-           "Perform a 'git diff --stat' in 'PATH' , or in multiple 'PATHS'." \
+           "Perform a 'git diff --stat' in one or more (sub)directories." \
            "" \
-           "All parameters starting with '--' will be pass to the 'git diff' command and" \
+           "All parameters starting with '--' will be passed to the 'git diff' command and" \
            "the default parameter '--stat' will be removed." \
            "" \
            "positional arguments:" \
-           "[PATH ...]                      path or multiple paths to perform a 'git diff'" \
+           "[PATH ...]                      one or more directories to perform a 'git diff'" \
            "" \
            "parameters:" \
            "-s, --skip                      do not show repositories without diff" \
-           "-a, --all                       descend over all directories in [PATH ...]" \
-           "-m, --maxdepth [LEVELS]         descend at most levels (a non-negative integer) of " \
-           "                                directories below [PATH ...]" \
-           "                                if set, it ignores '-a', '--all'" \
-           "-e, --exclude [DIRECTORY ...]   do not descend into this directory(s)" \
+           "-r, --recursive                 iterate over directories and all their subdirectories recursively" \
+           "-m, --maxdepth [LEVELS]         iterate over directories and their subdirectories until the" \
+           "                                set [LEVELS] is reached (a non-negative integer)." \
+           "                                if set, it ignores '-r|--recursive'" \
+           "-e, --exclude [DIRECTORY ...]   do not descend into this (sub)directory" \
            "                                list of strings, separated by a space and" \
            "                                surrounded by quotes (case sensitive)" \
            "-h, --help                      display this help and exit" \
@@ -68,7 +68,7 @@ while [ $# -gt 0 ];do
     key="$1"
     key="${key#"${key%%[![:space:]]*}"}"  # remove leading whitespace
     case $key in
-        -a|--all)
+        -r|--recursive)
         RECURSIVE=True
         shift
         ;;
