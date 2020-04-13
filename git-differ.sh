@@ -26,11 +26,12 @@ positional arguments:
 
 parameters:
 -s, --skip                      do ${UNDERLINE}not${NC} show repositories without diff
--r, --recursive                 iterate over directories and ${UNDERLINE}all${NC} their subdirectories recursively
+-r, --recursive                 iterate over directories and ${UNDERLINE}all${NC} their
+                                subdirectories recursively
 -m, --maxdepth [LEVELS]         iterate over directories and their subdirectories until
                                 the set [LEVELS] is reached (a non-negative integer).
                                 if set, it ignores '-r|--recursive'
--e, --exclude [DIRECTORY ...]   do not descend into this (sub)directory
+-e, --exclude [DIRECTORY ...]   do not descend into this (sub)directories
                                 list of strings, separated by a space and
                                 surrounded by quotes (case sensitive)
 -h, --help                      display this help and exit
