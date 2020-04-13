@@ -1,39 +1,46 @@
 #!/bin/sh
 
-VERSION="v1.0.3"
+VERSION="v1.0.4"
+
+REDC='\033[0;31m'
+GREENC='\033[0;32m'
+PURPLEC='\033[0;35m'
+UNDERLINE='\e[4m'
+NC='\033[0m' # no color / no format
 
 help() {
-    printf "%s\n"  \
-           "Usage: git-differ.sh [-s|--skip]" \
-           "                     [-r|--recursive]" \
-           "                     [-m|--maxdepth LEVELS]" \
-           "                     [-e|--exclude \"DIRECTORY [DIRECTORY] ...\"]"\
-           "                     PATH [PATH ...] " \
-           "" \
-           "Perform a 'git diff --stat' in one or more (sub)directories." \
-           "" \
-           "All parameters starting with '--' will be passed to the 'git diff' command and" \
-           "the default parameter '--stat' will be removed." \
-           "" \
-           "positional arguments:" \
-           "[PATH ...]                      one or more directories to perform a 'git diff'" \
-           "" \
-           "parameters:" \
-           "-s, --skip                      do not show repositories without diff" \
-           "-r, --recursive                 iterate over directories and all their subdirectories recursively" \
-           "-m, --maxdepth [LEVELS]         iterate over directories and their subdirectories until the" \
-           "                                set [LEVELS] is reached (a non-negative integer)." \
-           "                                if set, it ignores '-r|--recursive'" \
-           "-e, --exclude [DIRECTORY ...]   do not descend into this (sub)directory" \
-           "                                list of strings, separated by a space and" \
-           "                                surrounded by quotes (case sensitive)" \
-           "-h, --help                      display this help and exit" \
-           "-v, --version                   output version information and exit" \
-           "" \
-           "created by gi8lino (2020)" \
-           "https://github.com/gi8lino/git-differ" \
-           ""
-    exit 0
+    printf \
+"Usage: git-differ.sh [-s|--skip]
+                     [-r|--recursive]
+                     [-m|--maxdepth LEVELS]
+                     [-e|--exclude \"DIRECTORY [DIRECTORY] ...\"]
+                     PATH [PATH ...]
+
+Perform a 'git diff --stat' in one or more (sub)directories.
+
+All parameters starting with '--' will be passed to the 'git diff' command and
+the default parameter '--stat' will be removed.
+
+positional arguments:
+[PATH ...]                      one or more directories to perform a 'git diff'
+
+parameters:
+-s, --skip                      do ${UNDERLINE}not${NC} show repositories without diff
+-r, --recursive                 iterate over directories and ${UNDERLINE}all${NC} their
+                                subdirectories recursively
+-m, --maxdepth [LEVELS]         iterate over directories and their subdirectories until
+                                the set [LEVELS] is reached (a non-negative integer).
+                                if set, it ignores '-r|--recursive'
+-e, --exclude [DIRECTORY ...]   do not descend into this (sub)directories
+                                list of strings, separated by a space and
+                                surrounded by quotes (case sensitive)
+-h, --help                      display this help and exit
+-v, --version                   output version information and exit
+
+created by gi8lino (2020)
+https://github.com/gi8lino/git-differ
+\n"
+exit 0                                
 }
 
 walk() {
@@ -53,9 +60,9 @@ walk() {
 
         if [ "$no_changes" = 0 ]; then
             [ ! -n "$SKIP" ] && \
-                printf "\033[0;35m$_current_dir\033[0m \033[0;32mOK\033[0m\n"
+                printf "${PURPLEC}${_current_dir} ${GREENC}OK${NC}\n"
         else
-            printf "\033[0;35m$_current_dir\033[0m \033[0;31mNOK\033[0m\n"
+            printf "${PURPLEC}${_current_dir} ${REDC}NOK${NC}\n"
             git --git-dir="${_current_dir}/.git" --work-tree="${_current_dir}/" diff "$_diff_params"
         fi
     fi
@@ -75,7 +82,7 @@ while [ $# -gt 0 ];do
         -m|--maxdepth)
         DEPTH="$2"
         [ -z "$DEPTH" ] || [ -z "${DEPTH##*[!0-9]*}" ] && \
-            printf "\033[0;31mERROR: if you set '%s' it must be followd a number!\033[0m\n" $key && \
+            printf "${REDC}ERROR: if you set '%s' it must be followd a number!${NC}\n" $key && \
             exit 1
         shift
         shift
@@ -87,7 +94,7 @@ while [ $# -gt 0 ];do
         -e|--exclude)
         EXCLUDES="$2"
         [ ! -n "$EXCLUDES" ] && \
-            printf "\033[0;31mERROR: if you set '%s' it must be followd by minimum one directory!\033[0m\n" $key && \
+            printf "${REDC}ERROR: if you set '%s' it must be followd by minimum one directory!${NC}\n" $key && \
             exit 1
         shift
         shift
@@ -102,10 +109,10 @@ while [ $# -gt 0 ];do
         *)
         if [ -d "${key}" ]; then
             PATHS="$PATHS ${key}"
-        elif [ ! "${key##\-\-}" ]; then
+        elif [ "${key##\-\-}" ]; then
             DIFF_PARAMS="$DIFF_PARAMS $key"
         else
-            printf "\033[0;31mERROR: unknown parameter '$key'\033[0m\n"
+            printf "${REDC}ERROR: unknown parameter '$key'${NC}\n"
         fi
         shift
         ;;
@@ -121,8 +128,6 @@ done
 
 [ ! -z "$DEPTH" ] && [ ! -z "$RECURSIVE" ] && \
     unset DEPTH
-
-printf "use git diff parameter '\033[0;35m%s\033[0m'\n" "$DIFF_PARAMS"
 
 for dir in ${PATHS}; do
     walk "${dir}" "$DIFF_PARAMS" 0 "$RECURSIVE"

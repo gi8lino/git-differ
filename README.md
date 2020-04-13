@@ -25,9 +25,9 @@ git-differ.sh [-s|--skip]
 
 | parameter                           | description                                                                       |
 | ----------------------------------- | --------------------------------------------------------------------------------  |
-| `-s`, `--skip`                      | do not show repositories without diff                                             |
-| `-r`, `--recursive`                 | iterate over directories and all their subdirectories recursively                 |
+| `-s`, `--skip`                      | do **not** show repositories without diff                                         |
+| `-r`, `--recursive`                 | iterate over directories and **all** their subdirectories recursively             |
 | `-m`, `--maxdepth` `LEVELS`         | iterate over directories and their subdirectories until the set `LEVELS` is reached (a non-negative integer)<br>if set, it ignores `-r|--recursive` |
-| `-e`, `--exclude` `[DIRECTORY ...]` | do not descend into this directory(s)<br>list of strings, separated by a space and surrounded by quotes (case sensitive) |
+| `-e`, `--exclude` `[DIRECTORY ...]` | do not descend into this directories<br>list of strings, separated by a space and surrounded by quotes (case sensitive) |
 | `-h`, `--help`                      | display this help and exit                                                        |
 | `-v`, `--version`                   | output version information and exit                                               |
