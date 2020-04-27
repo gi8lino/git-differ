@@ -14,6 +14,8 @@ help() {
                      [-r|--recursive]
                      [-m|--maxdepth LEVELS]
                      [-e|--exclude \"DIRECTORY [DIRECTORY] ...\"]
+                     [-h|--help]
+                     [-v|--version]
                      PATH [PATH ...]
 
 Perform a 'git diff --stat' in one or more (sub)directories.
