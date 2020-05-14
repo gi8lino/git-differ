@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION="v1.0.4"
+VERSION="v1.0.5"
 
 REDC='\033[0;31m'
 GREENC='\033[0;32m'
@@ -53,12 +53,12 @@ walk() {
 
     for exclude in $EXCLUDES; do [ -z "${_current_dir##*$exclude*}" ] && return; done
 
-    [ ! -z "$DEPTH" ] && \
+    [ -n "$DEPTH" ] && \
         [ $_depth -gt $DEPTH ] && \
         return
 
     if [ -d "${_current_dir}/.git/" ]; then
-        git --git-dir="${_current_dir}/.git" --work-tree="${_current_dir}/" diff --quiet; no_changes=$?
+        git --git-dir="${_current_dir}/.git" --work-tree="${_current_dir}/" diff --submodule=diff --quiet; no_changes=$?
 
         if [ "$no_changes" = 0 ]; then
             [ ! -n "$SKIP" ] && \
@@ -69,13 +69,14 @@ walk() {
         fi
     fi
 
-    [ ! -z "$_recursive" ] || [ ! -z "$DEPTH" ] && \
+    [ -n "$_recursive" ] || [ -n "$DEPTH" ] && \
         for entry in "$_current_dir"/*; do [ -d "${entry}" ] && walk "${entry}" "$_diff_params" "$(($_depth+1))" "$_recursive"; done
 }
 
 while [ $# -gt 0 ];do
     key="$1"
     key="${key#"${key%%[![:space:]]*}"}"  # remove leading whitespace
+    [ -z "${key}" ] && shift && continue # skip empty strings
     case $key in
         -r|--recursive)
         RECURSIVE=True
@@ -128,7 +129,7 @@ done
     DIFF_PARAMS="--stat" || \
     DIFF_PARAMS=${DIFF_PARAMS#"${DIFF_PARAMS%%[![:space:]]*}"}
 
-[ ! -z "$DEPTH" ] && [ ! -z "$RECURSIVE" ] && \
+[ -n "$DEPTH" ] && [ -n "$RECURSIVE" ] && \
     unset DEPTH
 
 for dir in ${PATHS}; do
