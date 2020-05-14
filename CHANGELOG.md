@@ -1,5 +1,9 @@
 # changelog
 
+## v1.0.5
+
+* improve logic for checking if variable is set or empty
+
 ## v1.0.4
 
 * formatting help
