@@ -58,7 +58,7 @@ walk() {
         return
 
     if [ -d "${_current_dir}/.git/" ]; then
-        git --git-dir="${_current_dir}/.git" --work-tree="${_current_dir}/" diff --submodule=diff --quiet; no_changes=$?
+        git --git-dir="${_current_dir}/.git" --work-tree="${_current_dir}/" diff --quiet; no_changes=$?
 
         if [ "$no_changes" = 0 ]; then
             [ ! -n "$SKIP" ] && \
