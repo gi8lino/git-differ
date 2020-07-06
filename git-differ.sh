@@ -67,6 +67,18 @@ walk() {
             printf "${PURPLEC}${_current_dir} ${REDC}NOK${NC}\n"
             git --git-dir="${_current_dir}/.git" --work-tree="${_current_dir}/" diff "$_diff_params"
         fi
+
+        if [ -f "${_current_dir}/.gitmodules" ]; then
+            git --git-dir="${_current_dir}/.git" submodule status --quiet; no_changes=$?
+            if [ "$no_changes" = 0 ]; then
+                [ ! -n "$SKIP" ] && \
+                    printf "${PURPLEC}submodule: ${GREENC}OK${NC}\n"
+            else
+                printf "${PURPLEC}submodule: ${REDC}NOK${NC}\n"
+                git --git-dir="${_current_dir}/.git" submodule update --remote
+            fi
+        fi
+
     fi
 
     [ -n "$_recursive" ] || [ -n "$DEPTH" ] && \
